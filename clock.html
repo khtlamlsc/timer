@@ -1,0 +1,36 @@
+
+<html>
+<head>
+</head>
+<script>
+function startTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    h = checkTime(h);
+    document.getElementById('txt').innerHTML =
+    h + ':' + m + ':' + s;
+    var t = setTimeout(startTime, 100);
+}
+function checkTime(i) {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="">
+</script>
+<body onload="startTime()" style="color: #ffffff; background-color: #000000" >
+
+<div id="txt" align="center" style="text-align: center; font-family: Arial; text-decoration-color: white; font-size: 230pt"> </div>
+<!-- Amendments -->
+
+<td>
+   </td>
+</form>
+
+
+</body>
+</html>
