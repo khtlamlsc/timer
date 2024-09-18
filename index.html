@@ -63,6 +63,7 @@
         const fiveMinAudio = new Audio('five_min_left.mp3');
         const fifteenMinAudio = new Audio('fifteen_min_left.mp3');
         const timeUpAudio = new Audio('time_up.mp3');
+        let level = 0;
 
         function updateCurrentTime() {
             const now = new Date();
@@ -100,7 +101,7 @@
                     document.getElementById('examTimer').textContent = "Time's up!";
                     timeUpAudio.play();
                     document.getElementById('currentTime').style.color = 'green';
-                    document.body.style.backgroundColor = 'red';
+                    document.body.style.backgroundColor = 'yellow';
                     return;
                 }
 
@@ -109,14 +110,34 @@
                 document.getElementById('examTimer').textContent = 
                     `Time Remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
 
-                if (minutes <= 15) {
+                if (minutes == 15 && seconds == 0) {
+                        level = 1;
+                        fifteenMinAudio.play(); 
+                    }
+
+                    if (minutes == 5 && seconds == 0) {
+                        level = 2;
+                        fiveMinAudio.play(); 
+                    }
+                    
+                if (minutes < 15 && minutes >= 5) {
                     document.getElementById('currentTime').style.color = 'yellow';
-                    if (minutes === 15 && seconds === 0) fifteenMinAudio.play();
+                    if (level < 1) {
+                        level = 1;
+                        fifteenMinAudio.play();
+                        
+                    }
                 }
-                if (minutes <= 5) {
-                    document.getElementById('currentTime').style.color = 'red';
-                    if (minutes === 5 && seconds === 0) fiveMinAudio.play();
+
+                if (minutes < 5) {
+                    document.getElementById('currentTime').style.color = '#E78587';
+                    if (level < 2) {
+                        level = 2;
+                        fiveMinAudio.play()
+                    }
                 }
+                
+
 
             }, 1000);
         }
