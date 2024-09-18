@@ -1,36 +1,122 @@
-
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Timer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: black;
+            color: white;
+        }
+        #currentTime {
+            font-size: 250pt;
+            margin: 20px 0;
+            color: green;
+        }
+        #currentDate, #examTimer, #subjectDisplay {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        #examInfo {
+            font-size: 100px;
+            margin: 20px 0;
+            font-weight:bold;
+        }
+        input, button, textarea {
+            font-size: 18px;
+            margin: 10px;
+            padding: 5px;
+        }
+        #subject, #errata {
+            width: 80%;
+            height: 100px;
+        }
+        #subjectDisplay {
+            display: none;
+            font-size: 50px;
+        }
+    </style>
 </head>
-<script>
-function startTime() {
-    var today = new Date();
-    var h = today.getHours();
-    var m = today.getMinutes();
-    var s = today.getSeconds();
-    m = checkTime(m);
-    s = checkTime(s);
-    h = checkTime(h);
-    document.getElementById('txt').innerHTML =
-    h + ':' + m + ':' + s;
-    var t = setTimeout(startTime, 100);
-}
-function checkTime(i) {
-    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-    return i;
-}
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async="">
-</script>
-<body onload="startTime()" style="color: #ffffff; background-color: #000000" >
+<body>
+    <h1 id="title">Examination Timer</h1>
+    <div id="subjectDisplay"></div>
+    <div id="currentDate"></div>
+    <div id="currentTime"></div>
+    <input type="number" id="duration" placeholder="Enter duration in minutes" min="1">
+    <button onclick="startTimer()">Start</button>
+    <div id="examInfo"></div>
+    <div id="examTimer"></div>
+    <textarea id="subject" placeholder="Enter subject details"></textarea>
+    <textarea id="errata" background-color="black" text-color="white" placeholder="Enter errata details"></textarea>
 
-<div id="txt" align="center" style="text-align: center; font-family: Arial; text-decoration-color: white; font-size: 180pt"> </div>
-<!-- Amendments -->
+    <script>
+        let timer;
+        let endTime;
+        let startTime;
+        const fiveMinAudio = new Audio('five_min_left.mp3');
+        const fifteenMinAudio = new Audio('fifteen_min_left.mp3');
+        const timeUpAudio = new Audio('time_up.mp3');
 
-<td>
-   </td>
-</form>
+        function updateCurrentTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleTimeString('en-GB', { hour12: false });
+            document.getElementById('currentDate').textContent = now.toLocaleDateString();
+        }
 
+        function startTimer() {
+            const duration = document.getElementById('duration').value;
+            const subject = document.getElementById('subject').value;
+            if (!duration) return;
 
+            clearInterval(timer);
+            startTime = new Date();
+            endTime = new Date(startTime.getTime() + duration * 60000);
+
+            document.getElementById('examInfo').innerHTML = `
+                ${startTime.toLocaleTimeString('en-GB', { hour12: false })} - ${endTime.toLocaleTimeString('en-GB', { hour12: false })}
+            `;
+
+            document.getElementById('title').style.display = 'none';
+            document.getElementById('subjectDisplay').style.display = 'block';
+            document.getElementById('subjectDisplay').textContent = subject;
+            document.getElementById('subject').style.display = 'none';
+            document.getElementById('duration').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+
+            timer = setInterval(() => {
+                const now = new Date();
+                const diff = endTime - now;
+
+                if (diff <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('examTimer').textContent = "Time's up!";
+                    timeUpAudio.play();
+                    return;
+                }
+
+                const minutes = Math.floor(diff / 60000);
+                const seconds = Math.floor((diff % 60000) / 1000);
+                document.getElementById('examTimer').textContent = 
+                    `Time Remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                if (minutes <= 15) {
+                    document.getElementById('currentTime').style.color = 'yellow';
+                    if (minutes === 15 && seconds === 0) fifteenMinAudio.play();
+                }
+                if (minutes <= 5) {
+                    document.getElementById('currentTime').style.color = 'red';
+                    if (minutes === 5 && seconds === 0) fiveMinAudio.play();
+                }
+
+            }, 1000);
+        }
+
+        setInterval(updateCurrentTime, 100);
+        updateCurrentTime();
+    </script>
 </body>
 </html>
