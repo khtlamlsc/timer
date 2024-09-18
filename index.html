@@ -86,6 +86,7 @@
             document.getElementById('subject').style.display = 'none';
             document.getElementById('duration').style.display = 'none';
             document.querySelector('button').style.display = 'none';
+            document.getElementById('currentTime').style.color = 'white';
 
             timer = setInterval(() => {
                 const now = new Date();
@@ -95,6 +96,8 @@
                     clearInterval(timer);
                     document.getElementById('examTimer').textContent = "Time's up!";
                     timeUpAudio.play();
+                    document.getElementById('currentTime').style.color = 'green';
+                    document.body.style.backgroundColor = 'red';
                     return;
                 }
 
