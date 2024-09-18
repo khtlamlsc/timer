@@ -115,6 +115,11 @@
                         fifteenMinAudio.play(); 
                     }
 
+                    if (minutes == 14 && level == 0 && seconds > 50) {
+                        level = 1;
+                        fifteenMinAudio.play(); 
+                    }
+
                     if (minutes == 5 && seconds == 0) {
                         level = 2;
                         fiveMinAudio.play(); 
@@ -122,11 +127,6 @@
                     
                 if (minutes < 15 && minutes >= 5) {
                     document.getElementById('currentTime').style.color = 'yellow';
-                    if (level < 1) {
-                        level = 1;
-                        fifteenMinAudio.play();
-                        
-                    }
                 }
 
                 if (minutes < 5) {
